@@ -317,6 +317,11 @@ def login_google():
 
 @app.route('/logout')
 def logout():
+    #stop docker container in order to not to waste memory
+    container_name = slugify(unicode(g.user)).lower()
+    container_id = lookup_container(container_name)
+    docker_client.stop(container_id)
+
     # remove the username from the session if it's there
     session.pop('username', None)
     session.pop('name', None)
