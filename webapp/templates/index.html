@@ -1,0 +1,97 @@
+{% extends "bootstrap_responsive.html" %}
+{% import "bootstrap_wtf.html" as wtf %}
+
+{% block body_content %}
+<!-- google analytics -->
+<script>
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+	ga('create', 'UA-45257533-1', 'shogun-toolbox.org');
+	ga('send', 'pageview');
+
+</script>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Shogun Toolbox</a>
+          {% if g.user %}
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#about" data-toggle="tab">About</a></li>
+              <li><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
+              <li><a href="/logout">Signout {{ g.visible_name }}</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      {% if g.user %}
+
+        <div class="tabbable">
+           <div class="tab-content">
+               <div id="about" class="tab-pane active">
+      <div class="hero-unit">
+        <h1>Welcome</h1>
+        <p>This tool provides web based interactive interfaces for learning Shogun Toolbox via iPython notebooks</p>
+        <p>Each email that logs in will create a completely sandboxed environment for you to experiment with</p>
+      </div>
+                   </div>
+               <div id="ipynb" class="tab-pane">
+                {% if container %}
+                <iframe id="ipynb-frame" src="" seamless width=100% height=550px>
+                        <p>Your browser does not support iframes.</p>
+                    </iframe>
+                        {% else %}
+                        <p>no container available</p>
+                {% endif %}
+               </div>
+
+        </div>
+
+      {% else %}
+      <div>
+	      <p>
+	      This is a web based interface for people interested in using <a href="http://shogun-toolbox.org/">Shogun Toolbox</a>.
+	      </p>
+	      <p>
+	      It provides an iPython notebook webservice with all the currently available ipython notebooks of Shogun.<br/>
+	      You are more than welcome to play around with them as well as create your own notebooks.
+	      </p>
+
+	      <p>
+	      This is a courtesy service created by Shogun Toolbox developers, hence if you like it<br/> <b>please</b> consider some
+	      form of donation to the project so that we can keep up this service running for you. 
+	      </p>
+      </div>
+      <div>
+	      <div>Use one of the OAuth providers to login:</div>
+	      <a class="btn btn-primary btn-lg" href="/login/github">GitHub</a>
+	      <a class="btn btn-primary btn-lg" href="/login/google">Google</a>
+      </div>
+    {% endif %}
+    </div>
+
+{% endblock %}
+{% block bootstrap_js_bottom %}
+{{ super() }}
+    {% if container %}
+    <script>
+    $(function() {
+	    var u = "http://" + document.location.hostname + ":{{ container.portmap.8888 }}";
+	    $("#ipynb-frame").attr('src', u);
+    });
+    </script>
+    {% endif %}
+{% endblock %}
