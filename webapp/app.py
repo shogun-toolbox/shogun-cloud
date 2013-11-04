@@ -11,7 +11,8 @@ from unicodedata import normalize
 import docker
 from flask import Flask, render_template, session, g, redirect, url_for, request
 from flask.ext.bootstrap import Bootstrap
-from flask.ext.wtf import Form, TextField
+from flask.ext.wtf import Form
+from wtforms import TextField
 
 from rauth.service import OAuth2Service
 
