@@ -3,6 +3,7 @@
 
 {% block body_content %}
 <!-- google analytics -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"\>
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -69,7 +70,10 @@
 	      It provides an iPython notebook webservice with all the currently available ipython notebooks of Shogun.<br/>
 	      You are more than welcome to play around with them as well as create your own notebooks.
 	      </p>
-
+	  </div>
+	  <div class="notebook-images">
+	  </div>
+	  <div>
 	      <p>
 	      This is a courtesy service created by Shogun Toolbox developers, hence if you like it<br/> <b>please</b> consider some
 	      form of donation to the project so that we can keep up this service running for you. 
@@ -94,4 +98,15 @@
     });
     </script>
     {% endif %}
+	  <script>
+		  $.ajax({
+			  url: "http://www.shogun-toolbox.org/notebooks/list",
+			  success: function( data ) {
+				  for (var i=0; i<data.length; i++) {
+					  var link="<a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a>";
+					  $(".notebook-images" ).append(link);
+				  }
+			  }
+		  });
+	  </script>
 {% endblock %}
