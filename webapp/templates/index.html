@@ -107,14 +107,18 @@
        $.ajax({
                url: "http://www.shogun-toolbox.org/notebooks/list",
                success: function( data ) {
-		       $(".notebook-images").append("<div class=\"row\">");
-                       for (var i=0; i<data.length; i++) {
-			       var link="<div class=\"col-md-2\"><a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a></div>";
-                               $(".row" ).append(link);
+                        for (var i=0; i<data.length; i++) {
+                          var newRow=i%3
+                          if(newRow == 0) {
+                            if (i > 0) {
+                              $(".notebook-images").append("</div>");
+                            }
+                            $(".notebook-images").append("<div class=\"row\">");
+                          }
 
-
+                        var link="<div class=\"col-md-2\"><a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a></div>";
+                        $(".row").last().append(link);
                        }
-		       $(".notebook-images").append("</div>");
                }
        });
     </script>
