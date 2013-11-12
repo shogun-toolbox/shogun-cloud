@@ -6,13 +6,15 @@ import os
 import re
 import threading
 import time
+import datetime
+from dateutil.tz import *
+import dateutil.parser
 from unicodedata import normalize
 
 import docker
-from flask import Flask, render_template, session, g, redirect, url_for, request
+from flask import Flask, render_template, session, g, redirect, url_for, request, jsonify
 from flask.ext.bootstrap import Bootstrap
-from flask.ext.wtf import Form
-from wtforms import TextField
+from flask.ext.wtf import Form, TextField
 
 from rauth.service import OAuth2Service
 
@@ -29,9 +31,12 @@ app.config['GITHUB_CONSUMER_KEY'] = ''
 app.config['GITHUB_CONSUMER_SECRET'] = ''
 app.config['GOOGLE_CONSUMER_KEY'] = ''
 app.config['GOOGLE_CONSUMER_SECRET'] = ''
+# container timeout in seconds
+# number of seconds after the container will be shut down
+app.config['CONTAINER_TIMEOUT'] = '3600'
 
 CONTAINER_STORAGE = "/usr/local/etc/cloud/webapp/containers.json"
-SERVICES_HOST = '127.0.0.1'
+SERVICES_HOST = 'cloud.shogun-toolbox.org'
 BASE_IMAGE = 'vigsterkr/shogun-python'
 
 initial_memory_budget = psutil.virtual_memory().free  # or can use available for vm
@@ -80,11 +85,16 @@ class ContainerException(Exception):
 @app.before_request
 def get_current_user():
     g.user = None
+    g.visible_name = None
+    g.ipy_port = None
     username = session.get('username')
     visible_name = session.get('name')
+    ipy_port = session.get('ipy_port')
     if username is not None:
         g.user = username
 	g.visible_name = visible_name 
+    if ipy_port is not None:
+	    g.ipy_port = ipy_port
 
 _punct_re = re.compile(r'[\t !"#$%&\'()*\-/<=>?@\[\\\]^_`{|},.]+')
 
@@ -256,6 +266,9 @@ def index():
         if g.user:
             # show container:
             container = get_or_make_container(g.user)
+	    session['ipy_port'] = container['portmap'][8888]
+	    if session.get('after_login', ''):
+		    return redirect(session.get('after_login', ''))
 
         return render_template('index.html',
                 container=container,
@@ -264,6 +277,7 @@ def index():
     except ContainerException as e:
         session.pop('username', None)
         session.pop('name', None)
+        session.pop('ipy_port', None)
         return render_template('error.html', error=e)
 
 
@@ -316,6 +330,31 @@ def login_google():
 	return redirect(url) 
 
 
+@app.route('/notebook/<name>')
+def open_notebook(name):
+	if g.ipy_port:
+		if session.get('after_login', ''):
+			session.pop('after_login', None)
+		ipy_url = "http://{}:{}/{}".format(app.config['SERVICES_HOST'], g.ipy_port, name)
+		return redirect(ipy_url)
+
+	session['after_login'] = url_for('open_notebook', name=name)
+	return redirect(url_for('index'))
+
+
+@app.route('/seconds-available')
+def seconds_available():
+	if g.user:
+		container_name = slugify(unicode(g.user)).lower()
+		container_id = lookup_container(container_name)
+		started_at = dateutil.parser.parse(docker_client.inspect_container(container_id)['State']['StartedAt'])
+		diff = datetime.datetime.now(started_at.tzinfo) - started_at
+		avail_seconds = int(app.config['CONTAINER_TIMEOUT'])-diff.seconds
+		return jsonify(available_seconds=avail_seconds)
+
+	return redirect(url_for('index'))
+
+
 @app.route('/logout')
 def logout():
     #stop docker container in order to not to waste memory
@@ -326,8 +365,9 @@ def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     session.pop('name', None)
+    session.pop('ipy_port', None)
     return redirect(url_for('index'))
 
 
 if '__main__' == __name__:
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0', port=5001)

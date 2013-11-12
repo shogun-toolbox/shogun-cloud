@@ -26,8 +26,8 @@
           {% if g.user %}
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="#about" data-toggle="tab">About</a></li>
-              <li><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
+              <li><a href="#about" data-toggle="tab">About</a></li>
+              <li class="active"><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
               <li><a href="/logout">Signout {{ g.visible_name }}</a></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -41,14 +41,14 @@
 
         <div class="tabbable">
            <div class="tab-content">
-               <div id="about" class="tab-pane active">
+               <div id="about" class="tab-pane">
       <div class="hero-unit">
         <h1>Welcome</h1>
         <p>This tool provides web based interactive interfaces for learning Shogun Toolbox via iPython notebooks</p>
         <p>Each email that logs in will create a completely sandboxed environment for you to experiment with</p>
       </div>
                    </div>
-               <div id="ipynb" class="tab-pane">
+               <div id="ipynb" class="tab-pane active">
                 {% if container %}
                 <iframe id="ipynb-frame" src="" seamless width=100% height=550px>
                         <p>Your browser does not support iframes.</p>
@@ -69,13 +69,20 @@
 	      It provides an iPython notebook webservice with all the currently available ipython notebooks of Shogun.<br/>
 	      You are more than welcome to play around with them as well as create your own notebooks.
 	      </p>
-	  </div>
-	  <div class="notebook-images">
-	  </div>
-	  <div>
+      </div>
+      <div class="notebook-images">
+      </div>
+      <div>
 	      <p>
 	      This is a courtesy service created by Shogun Toolbox developers, hence if you like it<br/> <b>please</b> consider some
 	      form of donation to the project so that we can keep up this service running for you. 
+	      </p>
+
+	      <p>
+	      Due to high demand and low available resources we had to introduce a <b>time limit</b> of 60 minutes per session.<br/>
+	      <b>Note</b> that simply restarting your session will give you extra 60 minutes with you continuing where you left. All your work is saved.<br/>
+		If you would like to have more time please don't hesistate to contact us!<br/>
+		Thank you for your understanding!
 	      </p>
       </div>
       <div>
@@ -97,15 +104,15 @@
     });
     </script>
     {% endif %}
-	  <script>
-		  $.ajax({
-			  url: "http://www.shogun-toolbox.org/notebooks/list",
-			  success: function( data ) {
-				  for (var i=0; i<data.length; i++) {
-					  var link="<a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a>";
-					  $(".notebook-images" ).append(link);
-				  }
-			  }
-		  });
-	  </script>
+    <script>
+       $.ajax({
+               url: "http://www.shogun-toolbox.org/notebooks/list",
+               success: function( data ) {
+                       for (var i=0; i<data.length; i++) {
+                               var link="<a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a>";
+                               $(".notebook-images" ).append(link);
+                       }
+               }
+       });
+    </script>
 {% endblock %}
