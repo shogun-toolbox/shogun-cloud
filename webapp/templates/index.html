@@ -1,7 +1,7 @@
-{% extends "bootstrap_responsive.html" %}
-{% import "bootstrap_wtf.html" as wtf %}
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-{% block body_content %}
+{% block content %}
 <!-- google analytics -->
 <script>
 	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -14,27 +14,26 @@
 
 </script>
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cloud-navbar-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="#">Shogun Toolbox</a>
-          {% if g.user %}
-          <div class="nav-collapse">
-            <ul class="nav">
-              <li><a href="#about" data-toggle="tab">About</a></li>
-              <li class="active"><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
-              <li><a href="/logout">Signout {{ g.visible_name }}</a></li>
-            </ul>
-          </div><!--/.nav-collapse -->
-          {% endif %}
-        </div>
+          </button>
+          <a class="navbar-brand" href="#">Shogun Toolbox</a>
       </div>
-    </div>
+      {% if g.user %}
+      <div class="collapse navbar-collapse" id="cloud-navbar-collapse">
+	      <ul class="nav navbar-nav">
+		      <li><a href="#about" data-toggle="tab">About</a></li>
+		      <li class="active"><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
+		      <li><a href="/logout">Signout {{ g.visible_name }}</a></li>
+	      </ul>
+      </div><!--/.nav-collapse -->
+      {% endif %}
+    </nav>
+
 
     <div class="container">
       {% if g.user %}
@@ -42,7 +41,7 @@
         <div class="tabbable">
            <div class="tab-content">
                <div id="about" class="tab-pane">
-      <div class="hero-unit">
+      <div class="jumbotron">
         <h1>Welcome</h1>
         <p>This tool provides web based interactive interfaces for learning Shogun Toolbox via iPython notebooks</p>
         <p>Each email that logs in will create a completely sandboxed environment for you to experiment with</p>
@@ -87,14 +86,14 @@
       </div>
       <div>
 	      <div>Use one of the OAuth providers to login:</div>
-	      <a class="btn btn-primary btn-lg" href="/login/github">GitHub</a>
-	      <a class="btn btn-primary btn-lg" href="/login/google">Google</a>
+	      <a class="btn btn-primary" href="/login/github">GitHub</a>
+	      <a class="btn btn-primary" href="/login/google">Google</a>
       </div>
     {% endif %}
     </div>
 
 {% endblock %}
-{% block bootstrap_js_bottom %}
+{% block scripts %}
 {{ super() }}
     {% if container %}
     <script>
@@ -108,10 +107,14 @@
        $.ajax({
                url: "http://www.shogun-toolbox.org/notebooks/list",
                success: function( data ) {
+		       $(".notebook-images").append("<div class=\"row\">");
                        for (var i=0; i<data.length; i++) {
-                               var link="<a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a>";
-                               $(".notebook-images" ).append(link);
+			       var link="<div class=\"col-md-2\"><a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a></div>";
+                               $(".row" ).append(link);
+
+
                        }
+		       $(".notebook-images").append("</div>");
                }
        });
     </script>
