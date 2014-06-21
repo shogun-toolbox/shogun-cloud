@@ -3,8 +3,11 @@
 
 import docker
 import datetime
+import time
 from dateutil.tz import *
 import dateutil.parser
+import requests
+from models import db
 
 
 class ContainerException(Exception):
@@ -31,7 +34,8 @@ class DockerServer(object):
         raise ContainerException("No image found")
         return None
 
-    def add_portmap(cont):
+    def add_portmap(self, cont):
+        from app import app
         if cont['Ports']:
             cont['portmap'] = {_['PrivatePort']: _['PublicPort'] for _ in cont['Ports']}
 
@@ -51,8 +55,16 @@ class DockerServer(object):
                         pass
 
                 time.sleep(.2)
-                print 'waiting', app.config['SERVICES_HOST']
             return cont
+
+    def get_container_public_port(self, container_id, port):
+        container = self.get_container(container_id)
+	if container is not None:
+	    for mp in container['Ports']:
+                if mp['PrivatePort'] == port:
+		    print 'looofasz'
+                    return mp['PublicPort']
+	return None
 
     def get_container(self, cont_id, all=False):
         # TODO catch ConnectionError
@@ -64,6 +76,7 @@ class DockerServer(object):
     def get_container_uptime(self, container_id):
         started_at = dateutil.parser.parse(self.docker_client.inspect_container(container_id)['State']['StartedAt'])
         diff = datetime.datetime.now(started_at.tzinfo) - started_at
+	return diff.seconds
 
     def stop_container(self, container_id):
         self.docker_client.stop(container_id)
@@ -74,16 +87,17 @@ class DockerServer(object):
             image = self.get_image(self.base_repository)
             cont = self.docker_client.create_container(image['Id'],
                                                        None,
-                                                       hostname="{}box".format(name.split('-')[0]),
                                                        ports=[8888])
 
             user.container_id = cont['Id']
+	    db.session.commit()
 
         container = self.get_container(user.container_id, True)
 
         if container is None:
             # we may have had the container cleared out
             user.container_id = None
+	    db.session.commit()
             print 'recurse'
             # recurse
             # TODO DANGER- could have a over-recursion guard?
@@ -92,9 +106,10 @@ class DockerServer(object):
         if "Up" not in container['Status']:
             # if the container is not currently running, restart it
             # TODO check memory
-            self.docker_client.start(container_id,
+            self.docker_client.start(user.container_id,
                                      port_bindings={8888: ('0.0.0.0',)})
             # refresh status
             container = self.get_container(user.container_id)
         container = self.add_portmap(container)
         return container
+

@@ -2,7 +2,7 @@
 # coding=utf8
 
 from docker_server import DockerServer, ContainerException
-
+from models import User, db
 from flask import Flask, render_template, session, g, redirect
 from flask import url_for, request, jsonify
 from flask.ext.bootstrap import Bootstrap
@@ -10,10 +10,18 @@ from flask.ext.wtf import Form, TextField
 from flask.ext.login import LoginManager, login_required, current_user, \
     logout_user, login_user
 from flask_oauthlib.client import OAuth
+from flask.ext.script import Manager
+from flask.ext.migrate import Migrate, MigrateCommand
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
 app.config.from_envvar('FLASKAPP_SETTINGS', silent=True)
+
+db.init_app(app)
+migrate = Migrate(app, db)
+
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -51,20 +59,12 @@ docker_client = DockerServer(app.config['DOCKER_SERVERS'][0],
 Bootstrap(app)
 
 
-@app.before_request
-def get_current_user():
-    if current_user.is_authenticated():
-        ipy_port = session.get('ipy_port')
-        if ipy_port is not None:
-            g.ipy_port = ipy_port
-
-
 @app.route('/', methods=['GET'])
 def index():
     try:
         container = None
         if current_user.is_authenticated():
-            container = docker.get_or_make_container(current_user)
+            container = docker_client.get_or_make_container(current_user)
 
         return render_template('index.html', container=container,
                                servicehost=app.config['SERVICES_HOST'])
@@ -72,15 +72,15 @@ def index():
         return render_template('error.html', error=e)
 
 
-    """
-    try:
-        container = None
-        if current_user.is_authenticated():
-            container = get_or_make_container(g.user)
-            session['ipy_port'] = container['portmap'][8888]
-            if session.get('after_login', ''):
-                return redirect(session.get('after_login', ''))
-    """
+def populate_user(username, email):
+    user = db.session.query(User) \
+		    .filter(User.email == email) \
+		    .first()
+    if user is None:
+        user = User(username, email)
+        db.session.add(user)
+        db.session.commit()
+    return user
 
 
 @app.route('/github-authorized')
@@ -91,11 +91,12 @@ def github_authorized(resp):
                 request.args['error_reason'],
                 request.args['error_description']
             )
-
     session['github_token'] = (resp['access_token'], '')
     userinfo = github.get('user')
-    print userinfo
-    #User(userinfo['name'], userinfo['email'])
+    email = userinfo.data['email']
+    if email is None:
+        email = 'github@%s' % userinfo.data['login']
+    user = populate_user(userinfo.data['name'], email)
     login_user(user)
 
     return redirect(url_for('index'))
@@ -112,8 +113,7 @@ def google_authorized(resp):
 
     session['google_token'] = (resp['access_token'], '')
     userinfo = google.get('userinfo')
-
-    user = User(userinfo['name'], userinfo['email'])
+    user = populate_user(userinfo.data['name'], userinfo.data['email'])
     login_user(user)
 
     return redirect(url_for('index'))
@@ -134,8 +134,10 @@ def login_google():
 @app.route('/notebook/<name>')
 @login_required
 def open_notebook(name):
+    ipy_port = docker_client.get_container_public_port(current_user.container_id, u'8888')
+    print ipy_port
     ipy_url = "http://{}:{}/{}".format(app.config['SERVICES_HOST'],
-                                       g.ipy_port, name)
+                                       ipy_port, name)
     return redirect(ipy_url)
 
 
@@ -158,7 +160,7 @@ def get_github_oauth_token():
 
 @login_manager.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return db.session.query(User).get(id) 
 
 
 @login_manager.unauthorized_handler
@@ -171,10 +173,9 @@ def logout():
     #stop docker container in order to not to waste memory
     docker_client.stop_container(current_user.container_id)
 
-    session.pop('ipy_port', None)
     logout_user()
     return redirect(url_for('index'))
 
 
 if '__main__' == __name__:
-    app.run(debug=True, host='0.0.0.0', port=5001)
+    manager.run()
