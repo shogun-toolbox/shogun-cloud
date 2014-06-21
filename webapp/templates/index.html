@@ -1,125 +1,92 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "layout.html" %}
 
-{% block content %}
-<!-- google analytics -->
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+{% block container %}
+    <div class="tabbable">
+            <div class="tab-content">
 
-	ga('create', 'UA-45257533-1', 'shogun-toolbox.org');
-	ga('send', 'pageview');
-
-</script>
-
-    <nav class="navbar navbar-default" role="navigation">
-      <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cloud-navbar-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Shogun Toolbox</a>
-      </div>
-      {% if g.user %}
-      <div class="collapse navbar-collapse" id="cloud-navbar-collapse">
-	      <ul class="nav navbar-nav">
-		      <li><a href="#about" data-toggle="tab">About</a></li>
-		      <li class="active"><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
-		      <li><a href="/logout">Signout {{ g.visible_name }}</a></li>
-	      </ul>
-      </div><!--/.nav-collapse -->
-      {% endif %}
-    </nav>
-
-
-    <div class="container">
-      {% if g.user %}
-
-        <div class="tabbable">
-           <div class="tab-content">
-               <div id="about" class="tab-pane">
-      <div class="jumbotron">
-        <h1>Welcome</h1>
-        <p>This tool provides web based interactive interfaces for learning Shogun Toolbox via iPython notebooks</p>
-        <p>Each email that logs in will create a completely sandboxed environment for you to experiment with</p>
-      </div>
-                   </div>
-               <div id="ipynb" class="tab-pane active">
-                {% if container %}
+    {% if current_user.is_authenticated() %}
+            <div id="about" class="tab-pane">
+                <div class="jumbotron">
+                    <h1>Welcome</h1>
+                    <p>This tool provides web based interactive interfaces for learning Shogun Toolbox via iPython notebooks</p>
+                    <p>Each email that logs in will create a completely sandboxed environment for you to experiment with</p>
+                </div>
+            </div>
+            <div id="ipynb" class="tab-pane active">
+            {% if container %}
                 <iframe id="ipynb-frame" src="" seamless width=100% height=550px>
-                        <p>Your browser does not support iframes.</p>
-                    </iframe>
-                        {% else %}
-                        <p>no container available</p>
-                {% endif %}
-               </div>
-
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+            {% else %}
+                <p>no container available</p>
+            {% endif %}
+            </div>
+    {% else %}
+        <div id="about" class="tab-pane {% if not activeLogin %}active{% endif%}">
+            <div>
+                <p>This is a web based interface for people interested in using <a href="http://shogun-toolbox.org/">Shogun Toolbox</a>.</p>
+                <p>It provides an iPython notebook webservice with all the currently available ipython notebooks of Shogun.<br/>
+                You are more than welcome to play around with them as well as create your own notebooks.</p>
+            </div>
+            <div class="notebook-images"></div>
+            <p>
+                This is a courtesy service created by Shogun Toolbox developers, hence if you like it<br/> <b>please</b> consider some
+                form of donation to the project so that we can keep up this service running for you.
+            </p>
         </div>
 
-      {% else %}
-      <div>
-	      <p>
-	      This is a web based interface for people interested in using <a href="http://shogun-toolbox.org/">Shogun Toolbox</a>.
-	      </p>
-	      <p>
-	      It provides an iPython notebook webservice with all the currently available ipython notebooks of Shogun.<br/>
-	      You are more than welcome to play around with them as well as create your own notebooks.
-	      </p>
-      </div>
-      <div class="notebook-images">
-      </div>
-      <div>
-	      <p>
-	      This is a courtesy service created by Shogun Toolbox developers, hence if you like it<br/> <b>please</b> consider some
-	      form of donation to the project so that we can keep up this service running for you. 
-	      </p>
+        <div id="login" class="tab-pane {% if activeLogin %}active{% endif %}">
+            <div class="jumbotron">
+              <h2>Use one of the OAuth providers to login:</h2>
+              <a class="btn btn-primary" href="/login/github">GitHub</a>
+              <a class="btn btn-primary" href="/login/google">Google</a>
 
-	      <p>
-	      Due to high demand and low available resources we had to introduce a <b>time limit</b> of 60 minutes per session.<br/>
-	      <b>Note</b> that simply restarting your session will give you extra 60 minutes with you continuing where you left. All your work is saved.<br/>
-		If you would like to have more time please don't hesistate to contact us!<br/>
-		Thank you for your understanding!
-	      </p>
-      </div>
-      <div>
-	      <div>Use one of the OAuth providers to login:</div>
-	      <a class="btn btn-primary" href="/login/github">GitHub</a>
-	      <a class="btn btn-primary" href="/login/google">Google</a>
-      </div>
+              <h3>Limitations</h3>
+              <p>
+              Due to high demand and low available resources we had to introduce a <b>time limit</b> of 60 minutes per session.
+              </p>
+              <p>
+              Simply restarting your session will give you extra 60 minutes with you continuing where you left.
+              </p>
+              <p>All your work is <b>saved</b>.
+              If you would like to have more time please don't hesistate to contact us!<br/>
+              Thank you for your understanding!
+              </p>
+            </div>
+        </div>
     {% endif %}
+
+        </div>
     </div>
-
 {% endblock %}
-{% block scripts %}
-{{ super() }}
-    {% if container %}
-    <script>
-    $(function() {
-	    var u = "http://" + document.location.hostname + ":{{ container.portmap.8888 }}";
-	    $("#ipynb-frame").attr('src', u);
-    });
-    </script>
-    {% endif %}
-    <script>
-       $.ajax({
-               url: "http://www.shogun-toolbox.org/notebooks/list",
-               success: function( data ) {
-                        for (var i=0; i<data.length; i++) {
-                          var newRow=i%3
-                          if(newRow == 0) {
-                            if (i > 0) {
-                              $(".notebook-images").append("</div>");
-                            }
-                            $(".notebook-images").append("<div class=\"row\">");
-                          }
 
-                        var link="<div class=\"col-md-2\"><a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a></div>";
-                        $(".row").last().append(link);
-                       }
-               }
-       });
-    </script>
+{% block scripts %}
+  {{ super() }}
+  {% if container %}
+  <script>
+  $(function() {
+    var u = "http://" + document.location.hostname + ":{{ container.portmap.8888 }}";
+    $("#ipynb-frame").attr('src', u);
+  });
+  </script>
+  {% endif %}
+  <script>
+     $.ajax({
+             url: "http://www.shogun-toolbox.org/notebooks/list",
+             success: function( data ) {
+                      for (var i=0; i<data.length; i++) {
+                        var newRow=i%3
+                        if(newRow == 0) {
+                          if (i > 0) {
+                            $(".notebook-images").append("</div>");
+                          }
+                          $(".notebook-images").append("<div class=\"row\">");
+                        }
+
+                      var link="<div class=\"col-md-2\"><a href='/notebook/" + data[i][1] + "'><img width='140' height='105' alt='' src='" + data[i][0] + "'></img></a></div>";
+                      $(".row").last().append(link);
+                     }
+             }
+     });
+  </script>
 {% endblock %}

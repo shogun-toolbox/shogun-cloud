@@ -1,0 +1,35 @@
+BOOTSTRAP_USE_MINIFIED = True
+BOOTSTRAP_USE_CDN = True
+BOOTSTRAP_FONTAWESOME = True
+
+SECRET_KEY = 'devkey'
+
+GITHUB_CONSUMER_KEY = ''
+GITHUB_CONSUMER_SECRET = ''
+
+GOOGLE_CONSUMER_KEY = ''
+GOOGLE_CONSUMER_SECRET = ''
+
+# list of base urls where docker is reachable
+DOCKER_SERVERS = ['unix:///var/run/docker.sock']
+DOCKER_CONTAINER_REPOSITORY = 'vigsterkr/shogun-python'
+
+# container timeout in seconds
+# number of seconds after the container will be shut down
+DOCKER_CONTAINER_TIMEOUT = '3600'
+
+# how much memory should each container be limited to
+DOCKER_CONTAINER_MEM_LIMIT = 1024 * 1024 * 100
+
+# how much memory must remain in order for a new container to start?
+MEM_MIN = DOCKER_CONTAINER_MEM_LIMIT + 1024 * 1024 * 20
+
+SERVICES_HOST = 'cloud.shogun-toolbox.org'
+
+SQLALCHEMY_DATABASE_URI = ''
+
+GOOGLE_ANALYTICS_ACCOUNT = ''
+
+GCE_CLIENT_ID = ''
+GCE_CLIENT_SECRET = ''
+GCE_PROJECT_ID = ''

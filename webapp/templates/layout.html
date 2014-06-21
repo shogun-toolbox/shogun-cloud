@@ -1,0 +1,40 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/google.html" as google %}
+
+{% block title %}Shogun Toolbox Cloud{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{google.analytics(account=config['GOOGLE_ANALYTICS_ACCOUNT'])}}
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-default" role="navigation">
+  <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#cloud-navbar-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Shogun Toolbox</a>
+  </div>
+  <div class="collapse navbar-collapse" id="cloud-navbar-collapse">
+    <ul class="nav navbar-nav">
+    {% if current_user.is_authenticated() %}
+      <li><a href="#about" data-toggle="tab">About</a></li>
+      <li class="active"><a href="#ipynb" data-toggle="tab">IPython Notebook</a></li>
+      <li><a href="/logout">Signout {{ current_user.name }}</a></li>
+    {% else %}
+      <li {% if not activeLogin %}class="active"{% endif %}><a href="#about" data-toggle="tab">About</a></li>
+      <li {% if activeLogin %}class="active"{% endif %}><a href="#login" data-toggle="tab">Login</a></li>
+    {% endif %}
+    </ul>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+    {% block container %} {% endblock %}
+    </div>
+{% endblock %}

@@ -1,18 +1,18 @@
-{% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{% extends "layout.html" %}
 
-{% block content %}
+{% block navbar %}
  <nav class="navbar navbar-default" role="navigation">
       <div class="navbar-header">
           <a class="navbar-brand" href="#">Shogun Toolbox</a>
       </div>
 </nav>
-<div class="container">
+{% endblock %}
+
+{% block container %}
     <div class="tab-content">
         <div class="jumbotron">
             <h1>Oops...</h1>
             <p>{{ error }}</p>
         </div>
     </div>
-</div>
 {% endblock %}
