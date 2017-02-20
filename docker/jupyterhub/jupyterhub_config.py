@@ -20,7 +20,7 @@ c.MarathonSpawner.marathon_host = os.environ.get('MARATHON_MASTER')
 c.MarathonSpawner.marathon_constraints = os.getenv('MARATHON_CONSTRAINTS', [])
 c.MarathonSpawner.notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
 c.MarathonSpawner.hub_ip_connect = os.environ.get('HUB_IP_CONNECT')
-c.MarathonSpawner.hub_port_connect = os.environ.get('HUB_PORT_CONNECT')
+c.MarathonSpawner.hub_port_connect = int(os.environ.get('HUB_PORT_CONNECT'))
 
 c.MarathonSpawner.volumes = os.getenv('NB_DOCKER_VOLUMES', [])
 
