@@ -8,8 +8,9 @@ runtime_dir = '/srv/jupyterhub'
 if not os.path.exists(runtime_dir):
     os.makedirs(runtime_dir)
 
-c.JupyterHub.ssl_key = os.environ['SSL_KEY']
-c.JupyterHub.ssl_cert = os.environ['SSL_CERT']
+if os.environ['SSL_KEY'] and os.environ['SSL_CERT']:
+    c.JupyterHub.ssl_key = os.environ['SSL_KEY']
+    c.JupyterHub.ssl_cert = os.environ['SSL_CERT']
 
 c.JupyterHub.hub_ip = '0.0.0.0'
 
