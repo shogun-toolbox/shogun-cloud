@@ -10,7 +10,7 @@
       [Service]
       Type=oneshot
       RemainAfterExit=yes
-      ExecStart=/bin/bash -c "(blkid -t TYPE=ext4 | grep xvdb) || (/usr/sbin/mkfs.ext4 -F /dev/xvdb)"
+      ExecStart=/bin/bash -c "(blkid -t TYPE=ext4 | grep xvdz) || (/usr/sbin/mkfs.ext4 -F /dev/xvdz)"
     "name": |-
       format-var-lib-ephemeral.service
   - "command": |-
@@ -20,7 +20,7 @@
       Description=AWS Setup: Mount /var/lib
       Before=dbus.service
       [Mount]
-      What=/dev/xvdb
+      What=/dev/xvdz
       Where=/var/lib
       Type=ext4
     "name": |-
