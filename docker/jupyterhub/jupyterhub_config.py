@@ -25,7 +25,14 @@ c.MarathonSpawner.hub_port_connect = int(os.environ.get('HUB_PORT_CONNECT'))
 c.MarathonSpawner.mem_limit = os.getenv('NOTEBOOK_MEMORY_LIMIT', '2G')
 c.MarathonSpawner.cpu_limit = float(os.getenv('NOTEBOOK_CPU_LIMIT', 2.0))
 
-c.MarathonSpawner.volumes = os.getenv('NB_DOCKER_VOLUMES', [])
+
+def volumes(env_var):
+    if env_var in os.environ:
+        import json
+        return json.loads(os.environ[env_var])
+    return []
+
+c.MarathonSpawner.volumes = volumes('NB_DOCKER_VOLUMES')
 
 c.JupyterHub.cookie_secret_file = pjoin(runtime_dir, 'cookie_secret')
 c.JupyterHub.db_url = pjoin(runtime_dir, 'jupyterhub.sqlite')
