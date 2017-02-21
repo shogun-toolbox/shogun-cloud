@@ -14,6 +14,11 @@ resource "aws_launch_configuration" "public_slave" {
     volume_size = "${var.public_slave_volume_size}"
   }
 
+  ephemeral_block_device {
+    device_name = "/dev/xvdz"
+    virtual_name = "ephemeral0"
+  }
+
 }
 
 data "template_file" "public_slave_user_data" {

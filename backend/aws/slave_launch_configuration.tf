@@ -11,6 +11,11 @@ resource "aws_launch_configuration" "slave" {
     volume_size = "${var.slave_volume_size}"
   }
 
+  ephemeral_block_device {
+    device_name = "/dev/xvdz"
+    virtual_name = "ephemeral0"
+  }
+
   lifecycle {
     create_before_destroy = false
   }
