@@ -24,6 +24,8 @@ c.MarathonSpawner.hub_ip_connect = os.environ.get('HUB_IP_CONNECT')
 c.MarathonSpawner.hub_port_connect = int(os.environ.get('HUB_PORT_CONNECT'))
 c.MarathonSpawner.mem_limit = os.getenv('NOTEBOOK_MEMORY_LIMIT', '2G')
 c.MarathonSpawner.cpu_limit = float(os.getenv('NOTEBOOK_CPU_LIMIT', 2.0))
+c.MarathonSpawner.start_timeout = int(os.getenv('JPY_START_TIMEOUT', '60'))
+c.MarathonSpawner.http_timeout = int(os.getenv('JPY_HTTP_TIMEOUT', '60'))
 
 
 def volumes(env_var):
