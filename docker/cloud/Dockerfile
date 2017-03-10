@@ -11,7 +11,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3DD2174ACA
 RUN apt-get update
 RUN apt-get install -y --no-install-recommends python-shogun
 RUN ln -s /usr/lib/python2.7/dist-packages/modshogun.py /opt/conda/envs/python2/lib/python2.7/modshogun.py && \
- ln -s /usr/lib/python2.7/dist-packages/_modshogun.so /opt/conda/envs/python2/lib/python2.7/_modshogun.so
+ ln -s /usr/lib/python2.7/dist-packages/_modshogun.so /opt/conda/envs/python2/lib/python2.7/_modshogun.so && \
+ ln -s /usr/lib/python2.7/dist-packages/shogun /opt/conda/envs/python2/lib/python2.7/shogun
 
 # fetch juptyerhub-singleuser entrypoint
 RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser && \
