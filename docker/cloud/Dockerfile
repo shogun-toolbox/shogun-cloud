@@ -19,8 +19,12 @@ RUN ln -s /usr/lib/python2.7/dist-packages/modshogun.py /opt/conda/envs/python2/
 RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser && \
     chmod 755 /usr/local/bin/jupyterhub-singleuser
 
+RUN rm -r /opt/conda/share/jupyter/kernels/python3
+
 ADD singleuser.sh /srv/singleuser/singleuser.sh
 USER jovyan
 # smoke test that it's importable at least
 RUN sh /srv/singleuser/singleuser.sh -h
+
+EXPOSE 8888
 CMD ["sh", "/srv/singleuser/singleuser.sh"]
