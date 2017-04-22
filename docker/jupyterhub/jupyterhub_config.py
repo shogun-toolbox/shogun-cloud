@@ -14,6 +14,7 @@ if 'SSL_KEY' in os.environ and 'SSL_CERT' in os.environ:
 
 c.JupyterHub.hub_ip = '0.0.0.0'
 
+c.JupyterHub.template_paths = [pjoin(runtime_dir, 'templates')]
 c.JupyterHub.spawner_class = 'marathonspawner.MarathonSpawner'
 c.MarathonSpawner.app_image = os.environ.get('NB_DOCKER_IMAGE')
 c.MarathonSpawner.app_prefix = os.environ.get('MARATHON_APP_GROUP')
