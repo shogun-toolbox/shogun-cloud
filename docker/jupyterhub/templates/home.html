@@ -3,10 +3,39 @@
 {% block main %}
 
 <div class="container">
+<h1>Welcome to the Shogun cloud!</h1>
+<p>
+This service allows you to try Shogun from your browser in an interactive <a href="http://jupyter.org/" target="_blank">jupyter</a> notebook.
+</p>
+
+<h3>Usage</h3>
+<p>
+You can start and stop the service as you wish.
+While we aim to offer this service to as many people as possible, we have limited resources.
+We don't restrict usage time, but we kindly ask you to stop the session after you are done.
+You will also be automatically logged out after a certain time.
+Your results are available on the next log-in.
+</p>
+
+<h3>Example notebooks</h3>
+<p>
+All of the notebooks from our website <a href="http://shogun.ml/showroom" target="_blank">showroom</a> are available as demos.
+Note that they are all read-only, which means that you can run them but you cannot save modifications on them.
+If you want to store your changes, please open a terminal (New->Terminal) and copy the notebook from into your home folder (e.g. 'cp shogun-demos/ipython-notebooks/regression/Regression.ipynb my_writable_copy.ipynb').
+You can also start your own notebook from scratch.
+</p>
+
+<h3>Acknowledgments</h3>
+<p>
+This service is kindly supported by Amazon's AWS cloud credits for research program.
+</p>
+</div>
+
+<div class="container">
   <div class="row">
     <div class="text-center">
       {% if user.running %}
-      <a id="stop" class="btn btn-lg btn-danger">Stop My Server</a>
+      <a id="stop" class="btn btn-lg btn-danger">Stop Shogun cloud</a>
       {% endif %}
       <a id="start" class="btn btn-lg btn-success"
       {% if user.running %}
@@ -18,7 +47,7 @@
       {% if not user.running %}
       Start
       {% endif %}
-        My Server
+        Shogun cloud
       </a>
       {% if user.admin %}
       <a id="admin" class="btn btn-lg btn-primary" href="{{base_url}}admin">Admin</a>
