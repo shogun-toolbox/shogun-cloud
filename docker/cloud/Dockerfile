@@ -2,8 +2,6 @@ FROM jupyter/scipy-notebook
 
 MAINTAINER Shogun Team <shogun-team@shogun-toolbox.org>
 
-EXPOSE 8888
-
 USER root
 
 RUN echo "deb http://apt.shogun.ml jessie nightly" > /etc/apt/sources.list.d/shogun-toolbox-nightly-jessie.list && \
@@ -19,7 +17,11 @@ RUN ln -s /usr/lib/python2.7/dist-packages/modshogun.py /opt/conda/envs/python2/
 RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser && \
     chmod 755 /usr/local/bin/jupyterhub-singleuser
 
-RUN rm -r /opt/conda/share/jupyter/kernels/python3
+# we do not support it yet
+RUN pip3 uninstall -y ipython && \
+    rm /opt/conda/share/jupyter/kernels/python3/kernel.json && \
+    rm /usr/local/share/jupyter/kernels/python2/kernel.json
+COPY py2_nightly_kernel.json /usr/local/share/jupyter/kernels/python2/kernel.json
 
 ADD singleuser.sh /srv/singleuser/singleuser.sh
 USER jovyan

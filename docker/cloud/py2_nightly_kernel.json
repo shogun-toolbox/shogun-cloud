@@ -1,0 +1,9 @@
+{
+  "argv": [
+    "bash",
+    "-c",
+    "source \"/opt/conda/envs/python2/bin/activate\" \"/opt/conda/envs/python2\" && exec /opt/conda/envs/python2/bin/python -m ipykernel_launcher -f {connection_file}"
+  ],
+  "display_name": "Python 2 with Shogun nightly",
+  "language": "python"
+}
