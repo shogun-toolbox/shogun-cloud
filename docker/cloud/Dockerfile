@@ -28,5 +28,7 @@ USER jovyan
 # smoke test that it's importable at least
 RUN sh /srv/singleuser/singleuser.sh -h
 
+ENV SHOGUN_DATA_DIR /home/jovyan/work/data
+
 EXPOSE 8888
 CMD ["sh", "/srv/singleuser/singleuser.sh"]
