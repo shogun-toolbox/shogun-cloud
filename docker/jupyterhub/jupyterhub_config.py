@@ -14,6 +14,16 @@ if 'SSL_KEY' in os.environ and 'SSL_CERT' in os.environ:
 
 c.JupyterHub.hub_ip = '0.0.0.0'
 
+cull_timeout = os.getenv('JUPYTERHUB_CULL_TIMEOUT', '3600')
+cull_command = 'python cull_idle_servers.py --timeout=%s' % (cull_timeout)
+c.JupyterHub.services = [
+    {
+        'name': 'cull-idle',
+        'admin': True,
+        'command': cull_command.split(),
+    }
+]
+
 c.JupyterHub.template_paths = ['/srv/jp_templates']
 c.JupyterHub.spawner_class = 'marathonspawner.MarathonSpawner'
 c.MarathonSpawner.app_image = os.environ.get('NB_DOCKER_IMAGE')

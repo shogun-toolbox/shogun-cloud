@@ -23,9 +23,6 @@ RUN pip3 uninstall -y ipython && \
     rm /usr/local/share/jupyter/kernels/python2/kernel.json
 COPY py2_nightly_kernel.json /usr/local/share/jupyter/kernels/python2/kernel.json
 
-# install shogun notebook dependencies
-RUN pip install image
-
 ADD singleuser.sh /srv/singleuser/singleuser.sh
 USER jovyan
 # smoke test that it's importable at least
