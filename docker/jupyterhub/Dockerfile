@@ -3,4 +3,5 @@ MAINTAINER Shogun Team <shogun-team@shogun-toolbox.org>
 ENV LANG C.UTF-8
 
 COPY templates /srv/jp_templates
+COPY cull_idle_servers.py /usr/bin/cull_idle_servers.py
 RUN /opt/conda/bin/pip install oauthenticator marathonspawner
