@@ -4,4 +4,4 @@ ENV LANG C.UTF-8
 
 COPY templates /srv/jp_templates
 COPY cull_idle_servers.py /usr/bin/cull_idle_servers.py
-RUN /opt/conda/bin/pip install oauthenticator marathonspawner
+RUN /opt/conda/bin/pip install oauthenticator marathonspawner python-dateutil

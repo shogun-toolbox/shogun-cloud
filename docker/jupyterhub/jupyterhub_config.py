@@ -15,7 +15,7 @@ if 'SSL_KEY' in os.environ and 'SSL_CERT' in os.environ:
 c.JupyterHub.hub_ip = '0.0.0.0'
 
 cull_timeout = os.getenv('JUPYTERHUB_CULL_TIMEOUT', '3600')
-cull_command = 'python cull_idle_servers.py --timeout=%s' % (cull_timeout)
+cull_command = 'python /usr/bin/cull_idle_servers.py --timeout=%s' % (cull_timeout)
 c.JupyterHub.services = [
     {
         'name': 'cull-idle',
