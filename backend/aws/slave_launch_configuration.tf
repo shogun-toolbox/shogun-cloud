@@ -32,12 +32,14 @@ data "template_file" "slave_user_data" {
     cluster_packages            = "${var.cluster_packages}"
     aws_access_key_id           = "${aws_iam_access_key.host_keys.id}"
     aws_secret_access_key       = "${aws_iam_access_key.host_keys.secret}"
-    fallback_dns                = "${var.fallback_dns}"
     internal_master_lb_dns_name = "${aws_elb.internal_master.dns_name}"
     public_lb_dns_name          = "${aws_elb.public_slaves.dns_name}"
     exhibitor_s3_bucket         = "${aws_s3_bucket.exhibitor.id}"
     dcos_base_download_url      = "${var.dcos_base_download_url}"
     slave_instance_type         = "spot"
     efs_user_data               = "${aws_efs_mount_target.slave_private_subnet.dns_name}"
+    master_role                 = "${aws_iam_role.master.name}"
+    slave_role                  = "${aws_iam_user.dcos.name}"
+    stack_id                    = "${var.stack_id}"
   }
 }

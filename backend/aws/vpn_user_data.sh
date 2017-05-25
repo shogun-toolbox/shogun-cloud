@@ -6,8 +6,8 @@ function install_oracle_java {
     wget --no-cookies \
          --no-check-certificate \
          --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
-         "http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jdk-8u25-linux-x64.tar.gz" \
-         -O /tmp/jdk-8u25-linux-x64.tar.gz
+         "http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/jdk-8u131-linux-x64.tar.gz" \
+         -O /tmp/jdk-8u131-linux-x64.tar.gz
 
     if [[ $? != 0 ]]; then
         echo "Failed during Oracle Java download."
@@ -15,22 +15,22 @@ function install_oracle_java {
     fi
 
     echo "Extracting Oracle Java..."
-    tar xzf /tmp/jdk-8u25-linux-x64.tar.gz --directory=/usr/local/
+    tar xzf /tmp/jdk-8u131-linux-x64.tar.gz --directory=/usr/local/
     if [[ $? != 0 ]]; then
         echo "Failed during Oracle Java extraction."
         exit 1
     fi
 
     echo "Updating alternatives..."
-    update-alternatives --install "/usr/bin/java" "java" "/usr/local/jdk1.8.0_25/bin/java" 1
-    update-alternatives --install "/usr/bin/javac" "javac" "/usr/local/jdk1.8.0_25/bin/javac" 1
-    update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/local/jdk1.8.0_25/bin/javaws" 1
-    update-alternatives --set "java" "/usr/local/jdk1.8.0_25/bin/java"
-    update-alternatives --set "javac" "/usr/local/jdk1.8.0_25/bin/javac"
-    update-alternatives --set "javaws" "/usr/local/jdk1.8.0_25/bin/javaws"
+    update-alternatives --install "/usr/bin/java" "java" "/usr/local/jdk1.8.0_131/bin/java" 1
+    update-alternatives --install "/usr/bin/javac" "javac" "/usr/local/jdk1.8.0_131/bin/javac" 1
+    update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/local/jdk1.8.0_131/bin/javaws" 1
+    update-alternatives --set "java" "/usr/local/jdk1.8.0_131/bin/java"
+    update-alternatives --set "javac" "/usr/local/jdk1.8.0_131/bin/javac"
+    update-alternatives --set "javaws" "/usr/local/jdk1.8.0_131/bin/javaws"
 
     echo "Exporting JAVA_HOME..."
-    export JAVA_HOME=/usr/local/jdk1.8.0_25/
+    export JAVA_HOME=/usr/local/jdk1.8.0_131/
     echo "export JAVA_HOME=$JAVA_HOME" >> ~/.bashrc
 }
 
