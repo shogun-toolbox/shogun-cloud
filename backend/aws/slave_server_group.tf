@@ -3,7 +3,6 @@ resource "aws_autoscaling_group" "slave_server_group" {
 
   min_size = "${var.slave_instance_count_min}"
   max_size = "${var.slave_instance_count_max}"
-  desired_capacity = "${var.slave_instance_count_max / var.slave_instance_count_min}"
 
   termination_policies = ["OldestInstance", "ClosestToNextInstanceHour"]
 

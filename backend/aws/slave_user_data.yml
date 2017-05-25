@@ -115,6 +115,20 @@
       true
     "name": |-
       dcos-setup.service
+  - "command": |-
+      start
+    "content": |
+      [Unit]
+      Description=Pkgpanda: Cache shogun/cloud docker image.
+      Requires=dcos-setup.service
+      After=dcos-setup.service
+      [Service]
+      Type=oneshot
+      StandardOutput=journal+console
+      StandardError=journal+console
+      ExecStart=/usr/bin/docker pull shogun/cloud
+    "name": |-
+      shogun-docker.service
   "update":
     "reboot-strategy": |-
       off
