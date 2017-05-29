@@ -212,6 +212,10 @@ ${cluster_packages}
     /etc/mesosphere/setup-flags/late-config.yaml
   "permissions": |-
     0644
+- "content": |
+    shogun/.*
+  "path": |-
+    /etc/docker-gc-exclude
 - "content": ""
   "path": |-
     /etc/mesosphere/roles/slave
