@@ -13,22 +13,14 @@ RUN ln -s /usr/lib/python2.7/dist-packages/modshogun.py /opt/conda/envs/python2/
  ln -s /usr/lib/python2.7/dist-packages/_modshogun.so /opt/conda/envs/python2/lib/python2.7/_modshogun.so && \
  ln -s /usr/lib/python2.7/dist-packages/shogun /opt/conda/envs/python2/lib/python2.7/shogun
 
-# fetch juptyerhub-singleuser entrypoint
-RUN wget -q https://raw.githubusercontent.com/jupyterhub/jupyterhub/0.6.1/scripts/jupyterhub-singleuser -O /usr/local/bin/jupyterhub-singleuser && \
-    chmod 755 /usr/local/bin/jupyterhub-singleuser
-
 # we do not support it yet
 RUN pip3 uninstall -y ipython && \
     rm /opt/conda/share/jupyter/kernels/python3/kernel.json && \
     rm /usr/local/share/jupyter/kernels/python2/kernel.json
 COPY py2_nightly_kernel.json /usr/local/share/jupyter/kernels/python2/kernel.json
 
-ADD singleuser.sh /srv/singleuser/singleuser.sh
 USER jovyan
-# smoke test that it's importable at least
-RUN sh /srv/singleuser/singleuser.sh -h
-
 ENV SHOGUN_DATA_DIR /home/jovyan/work/data
 
 EXPOSE 8888
-CMD ["sh", "/srv/singleuser/singleuser.sh"]
+CMD ["start-singleuser.sh"]

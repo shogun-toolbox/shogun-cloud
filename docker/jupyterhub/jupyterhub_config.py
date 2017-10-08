@@ -26,13 +26,15 @@ c.JupyterHub.services = [
 
 c.JupyterHub.template_paths = ['/srv/jp_templates']
 c.JupyterHub.spawner_class = 'marathonspawner.MarathonSpawner'
+c.JupyterHub.cmd = 'start-singleuser.sh'
+c.JupyterHub.hub_connect_ip = os.environ.get('JUPYTERHUB_IP_CONNECT')
+c.JupyterHub.hub_connect_port = int(os.environ.get('JUPYTERHUB_PORT_CONNECT'))
+
 c.MarathonSpawner.app_image = os.environ.get('NB_DOCKER_IMAGE')
 c.MarathonSpawner.app_prefix = os.environ.get('MARATHON_APP_GROUP')
 c.MarathonSpawner.marathon_host = os.environ.get('MARATHON_MASTER')
 c.MarathonSpawner.marathon_constraints = os.getenv('MARATHON_CONSTRAINTS', [])
 c.MarathonSpawner.notebook_dir = os.environ.get('DOCKER_NOTEBOOK_DIR') or '/home/jovyan/work'
-c.MarathonSpawner.hub_ip_connect = os.environ.get('JUPYTERHUB_IP_CONNECT')
-c.MarathonSpawner.hub_port_connect = int(os.environ.get('JUPYTERHUB_PORT_CONNECT'))
 c.MarathonSpawner.mem_limit = os.getenv('NOTEBOOK_MEMORY_LIMIT', '2G')
 c.MarathonSpawner.cpu_limit = float(os.getenv('NOTEBOOK_CPU_LIMIT', 2.0))
 c.MarathonSpawner.start_timeout = int(os.getenv('JUPYTERHUB_START_TIMEOUT', '60'))
