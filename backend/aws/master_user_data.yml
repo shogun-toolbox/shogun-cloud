@@ -1,4 +1,5 @@
 #cloud-config
+
 "coreos":
   "units":
   - "command": |-
@@ -135,16 +136,18 @@ ${cluster_packages}
   "permissions": |-
     0644
 - "content": |
+    libstorage:
+      integration:
+        volume:
+          operations:
+            unmount:
+              ignoreusedcount: true
+      server:
+        tasks:
+          logTimeout: 5m
     rexray:
       loglevel: info
-      modules:
-        default-admin:
-          host: tcp://127.0.0.1:61003
-      storageDrivers:
-      - ec2
-      volume:
-        unmount:
-          ignoreusedcount: true
+      service: ebs
   "path": |-
     /etc/rexray/config.yml
   "permissions": |-
@@ -176,7 +179,7 @@ ${cluster_packages}
       "s3_prefix": |-
         ${stack_name}
     "late_bound_package_id": |-
-      dcos-provider-959e9da3825c3edcf21a0d0fba72929d48efff9c-aws--setup
+      dcos-provider-${dcos_provider_package_id}-aws--setup
   "owner": |-
     root
   "path": |-

@@ -31,5 +31,6 @@ data "template_file" "master_user_data" {
     master_role                 = "${aws_iam_role.master.name}"
     slave_role                  = "${aws_iam_user.dcos.name}"
     stack_id                    = "${var.stack_id}"
+    dcos_provider_package_id    = "${var.dcos_provider_package_id}"
   }
 }
