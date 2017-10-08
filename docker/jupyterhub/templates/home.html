@@ -29,29 +29,21 @@ You can also start your own notebook from scratch.
 <p>
 This service is kindly supported by Amazon's AWS cloud credits for research program.
 </p>
+<p>In order to be able to keep up this service running please consider a <a href="https://www.flipcause.com/widget/give_now/MTk0MjM=?_ga=2.246910471.2024580415.1507477152-584481597.1503591420" target="_blank">donation</a> for the project.</p>
 </div>
 
 <div class="container">
   <div class="row">
     <div class="text-center">
       {% if user.running %}
-      <a id="stop" class="btn btn-lg btn-danger">Stop Shogun cloud</a>
+      <a id="stop" role="button" class="btn btn-lg btn-danger">Stop Shogun cloud</a>
       {% endif %}
-      <a id="start" class="btn btn-lg btn-success"
-      {% if user.running %}
-        href="{{ user.url }}"
-      {% else %}
-        href="{{base_url}}spawn"
-      {% endif %}
-      >
+      <a id="start" role="button" class="btn btn-lg btn-success" href="{{ url }}">
       {% if not user.running %}
       Start
       {% endif %}
         Shogun cloud
       </a>
-      {% if user.admin %}
-      <a id="admin" class="btn btn-lg btn-primary" href="{{base_url}}admin">Admin</a>
-      {% endif %}
     </div>
   </div>
 </div>
