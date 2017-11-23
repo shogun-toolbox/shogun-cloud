@@ -130,6 +130,21 @@
       ExecStart=/usr/bin/docker pull shogun/cloud
     "name": |-
       shogun-docker.service
+  - "command": |-
+      start
+    "content": |
+      [Unit]
+      Description=Fix rexray.
+      Requires=dcos-setup.service
+      After=dcos-setup.service
+      [Service]
+      Type=oneshot
+      StandardOutput=journal+console
+      StandardError=journal+console
+      ExecStartPre=/bin/cp /opt/rexray.conf /opt/mesosphere/etc/rexray.conf
+      ExecStart=/usr/bin/systemctl restart dcos-rexray
+    "name": |-
+      fix-rexray.service
   "update":
     "reboot-strategy": |-
       off
@@ -174,8 +189,31 @@ ${cluster_packages}
     rexray:
       loglevel: info
       service: ebs
+    aws:
+      accessKey: ${aws_access_key_id}
+      secretKey: ${aws_secret_access_key}
   "path": |-
     /etc/rexray/config.yml
+  "permissions": |-
+    0644
+- "content": |
+    libstorage:
+      integration:
+        volume:
+          operations:
+            unmount:
+              ignoreusedcount: true
+      server:
+        tasks:
+          logTimeout: 5m
+    rexray:
+      loglevel: info
+      service: ebs
+    aws:
+      accessKey: ${aws_access_key_id}
+      secretKey: ${aws_secret_access_key}
+  "path": |-
+    /opt/rexray.conf
   "permissions": |-
     0644
 - "content": |
