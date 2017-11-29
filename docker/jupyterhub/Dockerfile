@@ -1,4 +1,4 @@
-FROM jupyterhub/jupyterhub-onbuild:0.8.0
+FROM jupyterhub/jupyterhub-onbuild:0.8.1
 MAINTAINER Shogun Team <shogun-team@shogun-toolbox.org>
 ENV LANG C.UTF-8
 
